@@ -1,0 +1,58 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# These two lines indicate we're building an executable (.exe) file,
+# namely, boot.exe
+TARGETNAME=boot
+TARGETTYPE=PROGRAM
+
+# This is the bootloader entry point function where execution will begin.
+EXEENTRY=StartUp
+
+# Create boot.bin during the post build step.  The actual rule is
+# defined in makefile.inc.
+POSTBUILDTARGETS=$(SG_OUTPUT_ROOT)\platform\$(_TGTPLAT)\target\$(_CPUINDPATH)\boot.bin
+
+# Show boot.bib and the readme file in platform builder
+FILE_VIEW_ROOT_FOLDER=boot.bib \
+    readme.html \
+
+# Finish previous directories before building this one to avoid
+# permission conflicts with other bootloader templates
+SYNCHRONIZE_DRAIN=1
+
+# Linking to fulllibc.lib requires the below statement
+NOLIBC=1
+
+# boot.exe requires that we not have a fixed base address in memory
+# this line instructes the linker to generate boot.rel, which will be
+# used when creating boot.bin, the bootloader image that can be
+# downloaded to device memory
+LDEFINES=/FIXED:NO
+
+# Source files we're going to compile
+SOURCES=\
+    debug.c \
+    flash.c \
+    main.c \
+    startup.c \
+
+# Libraries we're going to link to form boot.exe
+# These include:
+# oal_blcommon: the BLCommon framework that supplies the core
+#               logic for the bootloader
+#
+# oal_blnk    : provides basic debug message output
+TARGETLIBS= \
+    $(_PLATCOMMONLIB)\$(_CPUDEPPATH)\oal_blcommon.lib \
+    $(_PLATCOMMONLIB)\$(_CPUDEPPATH)\oal_blnk.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\fulllibc.lib \

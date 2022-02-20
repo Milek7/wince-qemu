@@ -1,0 +1,77 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this sample source code is subject to the terms of the Microsoft
+; license agreement under which you licensed this sample source code. If
+; you did not accept the terms of the license agreement, you are not
+; authorized to use this sample source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the LICENSE.RTF on your install media or the root of your tools installation.
+; THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+
+; The MEMORY section defines the physical memory available on
+; the device and describes how that memory can be used.
+MEMORY
+
+; The table below defines how the bootloader will be laid out
+; in memory by romimage.exe.  The RAMIMAGE portion is the area
+; available for the compiled bootloader code.  The RAM potion
+; is the area available for allocations (stack or heap).  The
+; ARGS region is typically shared with the operating system
+; and is physical memory reserved in a known location so the
+; bootloader can pass custom arguments to the operating
+; system.
+;
+; The format of the table is:
+; <region name> <starting hex memory adress> <size in hex> <region type>
+;
+
+;   Name      Start     Size      Type
+;   -------   --------  --------  ----
+; Here we are partitioning 1MB of space for bootloader code
+; starting at physical address 0.
+    BLDR      00000000  00100000  RAMIMAGE
+; Then another 1MB of space for RAM available for allocations
+; starting at physical address 0x00100000, which is where the
+; code portion ends.
+    RAM       00100000  00100000  RAM
+; Finally 4KB of space for arguments starting at physical
+; address 0x00200000.  The operating system's .bib file
+; should also reserve this memory so it will remain untouched.
+    ARGS      00200000  00001000  RESERVED
+
+; The CONFIG section defines configuration options.  These are
+; options that are passed to romimage.exe.
+CONFIG
+
+; The specifies that writeable sequences in the MODULES section
+; will not be compressed.
+COMPRESSION=OFF
+
+; This excludes profiler structure and symbols (since the profiler is
+; a kernel component, thus unavailable in the bootloader)
+PROFILE=OFF
+
+; This specifies that the writable sections of the bootloader
+; (which romimage is treating as if it is the kernel) are relocated
+; to the start of RAM.  This needs to be on since when our
+; bootloader will begin executing with the MMU off.
+KERNELFIXUPS=ON
+
+; The MODULES section describes which executable modules are
+; included in the image and which memory regions they are loaded in.
+MODULES
+
+; In this section we're instructed romimage that the only executable
+; module in our image is bldr.exe.  We're renaming it to nk.exe inside
+; the image, effectively calling our bootloader the kernel for the purposes
+; of image layout; thus it will be the image entry point.
+;
+; We're instructing romimage.exe to place the bldr.exe module in the
+; BLDR region that we specified in the MEMORY section.
+
+; Name      Path                                                                                   Memory
+; --------  -------------------------------------------------------------------------------------  -------
+  nk.exe    $(SG_OUTPUT_ROOT)\platform\$(_TGTPLAT)\target\$(_TGTCPU)\$(WINCEDEBUG)\bldr.exe        bldr

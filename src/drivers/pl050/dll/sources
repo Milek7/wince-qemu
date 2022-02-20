@@ -1,0 +1,45 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!IF 0
+
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+TARGETNAME=pl050
+TARGETTYPE=DYNLINK
+DLLENTRY=_DllMainCRTStartup
+
+SOURCES=\
+    PDDList.cpp
+
+FILE_VIEW_INCLUDES_FOLDER= \
+    pl050.def
+
+TARGETLIBS= \
+    $(_COMMONSDKROOT)\lib\$(_CPUDEPPATH)\ceddk.lib \
+    $(_COMMONSDKROOT)\lib\$(_CPUDEPPATH)\coredll.lib
+
+SOURCELIBS= \
+    $(_PLATLIB)\$(_CPUDEPPATH)\pl050_lib.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\LayoutManager.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\KeybdIst.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\KbdShim.lib

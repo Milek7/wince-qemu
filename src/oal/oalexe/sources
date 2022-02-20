@@ -1,0 +1,49 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# These indicate we're building oal.exe
+TARGETNAME=oal
+TARGETTYPE=PROGRAM
+
+# oal.exe requires that we not have a fixed base address in memory
+# this line instructes the linker to generate oal.rel, which will be
+# used later in the build process
+LDEFINES=/FIXED:NO
+
+# Finish all previous directories before building this one
+SYNCHRONIZE_DRAIN=1
+
+# Our entry point is the startup function
+EXEENTRY=StartUp
+
+# Source files we're going to compile
+# In this case none since we've compiled our OAL source files
+# into oal.lib
+SOURCES=
+
+# Libraries we're going to link to form the .exe
+# These include:
+# oemmain: implements the OEMInitGlobals function which
+#          exchanges global function pointers between the
+#          OAL and kernel
+#
+# nkldr  : CPU-specific startup code provided by the kernel
+#
+# nkstub : translation library for kernel functions so their
+#          legacy names can be used
+#
+# oal    : our oal source library that we compiled in ..\oallib
+TARGETLIBS= \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\oemmain.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\nkldr.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\nkstub.lib \
+    $(_PLATLIB)\$(_CPUDEPPATH)\oal.lib \

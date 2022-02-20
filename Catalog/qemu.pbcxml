@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CatalogFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" RequiredVersion="7.00" xmlns="urn:Microsoft.PlatformBuilder/Catalog">
+  <FileInformation Id="FileInformation:qemu:qemu">
+    <Title>qemu</Title>
+    <Description>qemu BSP Catalog Items</Description>
+    <Vendor>qemu</Vendor>
+    <OSVersion>7.00</OSVersion>
+    <FileVersion>1.0</FileVersion>
+  </FileInformation>
+  <Bsp Id="Bsp:qemu:qemu:ARMV7">
+    <Title>QEMU: ARMV7</Title>
+    <Description>BSP for QEMU vexpress-a15</Description>
+    <PlatformDirectory>qemu</PlatformDirectory>
+    <CpuId>Cpu:ARMV7</CpuId>
+    <BspItemId>Item:qemu:BSPTemplateInstructions:BSPTemplate_qemu</BspItemId>
+    <BspItemId>Item:qemu:TemplateBootloader:BSPTemplate_qemu</BspItemId>
+    <BspItemId>Item:qemu:TemplateBootloader2:BSPTemplate_qemu</BspItemId>
+    <BspItemId>Item:qemu:TemplateBSPConfigFiles:BSPTemplate_qemu</BspItemId>
+    <BspItemId>Item:qemu:TemplateOAL:BSPTemplate_qemu</BspItemId>
+    <BspItemId>Item:qemu:TemplateKITL:BSPTemplate_qemu</BspItemId>
+    <BspItemId>Item:qemu:TemplateStreamDriver:BSPTemplate_qemu</BspItemId>
+  </Bsp>
+  <Item Id="Item:qemu:BSPTemplateInstructions:BSPTemplate_qemu">
+    <Title>!BSP Template Instructions - Start Here!</Title>
+    <Description>BSP Template Instructions</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>BSP TEMPLATE INSTRUCTIONS</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\INSTRUCTIONS</Path>
+    </SourceCode>
+  </Item>
+  <Item Id="Item:qemu:TemplateOAL:BSPTemplate_qemu">
+    <Title>Template OAL</Title>
+    <Description>OAL Tutorial and Template BSP Instructions</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>TEMPLATE OAL SOURCE CODE</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\SRC\OAL\OALLIB</Path>
+    </SourceCode>
+  </Item>
+  <Item Id="Item:qemu:TemplateBootloader:BSPTemplate_qemu">
+    <Title>Template Bootloader (BLCommon)</Title>
+    <Description>Bootloader Template using BLCommon Framework</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>TEMPLATE BOOTLOADER SOURCE CODE USING BLCOMMON FRAMEWORK</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\SRC\BOOTLOADER\BOOT</Path>
+    </SourceCode>
+  </Item>
+  <Item Id="Item:qemu:TemplateBootloader2:BSPTemplate_qemu">
+    <Title>Template Bootloader (CEBF)</Title>
+    <Description>Bootloader Template using CE Boot Framework</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>TEMPLATE BOOTLOADER SOURCE CODE USING CE BOOT FRAMEWORK</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\SRC\BOOTLOADER\BLDR</Path>
+    </SourceCode>
+  </Item>
+  <Item Id="Item:qemu:TemplateBSPConfigFiles:BSPTemplate_qemu">
+    <Title>Template Config Files</Title>
+    <Description>BSP Config Files Template</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>TEMPLATE CONFIG FILES SOURCE CODE</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\FILES</Path>
+    </SourceCode>
+  </Item>
+  <Item Id="Item:qemu:TemplateKITL:BSPTemplate_qemu">
+    <Title>Template KITL</Title>
+    <Description>KITL Template</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>TEMPLATE KITL SOURCE CODE</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\SRC\KITL</Path>
+    </SourceCode>
+  </Item>
+  <Item Id="Item:qemu:TemplateStreamDriver:BSPTemplate_qemu">
+    <Title>Template Stream Driver</Title>
+    <Description>Stream Driver Template</Description>
+    <Type>BspSpecific</Type>
+    <ChooseOneGroup>true</ChooseOneGroup>
+    <Location />
+    <SourceCode>
+      <Title>TEMPLATE STREAM DRIVER SOURCE CODE</Title>
+      <Path>$(_WINCEROOT)\PLATFORM\QEMU\SRC\DRIVERS\STREAMDRIVER</Path>
+    </SourceCode>
+  </Item>
+</CatalogFile>

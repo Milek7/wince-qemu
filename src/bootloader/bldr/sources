@@ -1,0 +1,64 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# These two lines indicate we're building an executable (.exe) file,
+# namely, bldr.exe
+TARGETNAME=bldr
+TARGETTYPE=PROGRAM
+
+# This is the bootloader entry point function where execution will begin.
+EXEENTRY=BootloaderEntryPoint
+
+# Create bldr.bin during the post build step.  The actual rule is
+# defined in makefile.inc.
+POSTBUILDTARGETS=$(SG_OUTPUT_ROOT)\platform\$(_TGTPLAT)\target\$(_CPUINDPATH)\bldr.bin
+
+# Turn on some linker switches that are necessary for building the image
+# entry point.
+LDEFINES=/DEBUG /FIXED:NO
+
+# Turn off safe exception handling since we have no exception handler in the 
+# bootloader
+SAFESEH=
+
+# This should be specified for any target that links to fulllibc.lib
+NOLIBC=1
+
+# Show bldr.bib in platform builder
+FILE_VIEW_ROOT_FOLDER=bldr.bib
+
+# Finish previous directories before building this one to avoid
+# permission conflicts with other bootloader templates
+SYNCHRONIZE_DRAIN=1
+
+# Add the CE Boot Framework header directory to the include path
+INCLUDES=$(_PLATFORMROOT)\common\src\common\bldr\inc;$(INCLUDES)
+
+# The source code we'll compile into our bootloader
+SOURCES= \
+    start.c \
+    bldr.c \
+
+# Other libraries we'll link into our bootloader.  There are three:
+# 1. gsnull: a stub for the kernel's security implementation
+# 2. fulllibc: c-run time
+# 3. CPU-specific CE Boot Framework core library: choose one
+#    boot_core_x86_bios.lib: BIOS-based bootloader for x86 CPUs
+#    boot_core_arm.lib     : bootloader for ARM CPUs, leaves MMU off
+#    boot_core_arm_mmu.lib : bootloader for ARM CPUs, turns MMU on
+TARGETLIBS= \
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\gsnull.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUINDPATH)\fulllibc.lib \
+# Uncomment one of the following and discard the rest.
+#    $(_PLATCOMMONLIB)\$(_CPUDEPPATH)\boot_core_x86_bios.lib \
+#    $(_PLATCOMMONLIB)\$(_CPUDEPPATH)\boot_core_arm.lib \
+#    $(_PLATCOMMONLIB)\$(_CPUDEPPATH)\boot_core_arm_mmu.lib \

@@ -1,0 +1,32 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+
+# This file is inherited by all BSP SOURCES files.  It is useful
+# for defining macros and setting defaults.
+
+# Indicate to the build system we are compiling the BSP
+RELEASETYPE=PLATFORM
+
+# Set up some paths used by other macros in the build system
+_COMMONPUBROOT=$(SG_OUTPUT_ROOT)
+__PROJROOT=$(_PROJECTROOT)
+
+# The directory where BSP-built libraries are compiled to
+_PLATLIB=$(SG_OUTPUT_ROOT)\platform\$(_TGTPLAT)\lib
+# The directory containing platform-common libraries
+_PLATCOMMONLIB=$(SG_OUTPUT_ROOT)\platcomm\$(_TGTPLAT)\lib 
+
+# Add public include directories so we can include public headers
+INCLUDES=$(_WINCEROOT)\public\common\oak\inc
+INCLUDES=$(INCLUDES);$(_WINCEROOT)\public\common\sdk\inc
+INCLUDES=$(INCLUDES);$(_WINCEROOT)\public\common\ddk\inc

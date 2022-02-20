@@ -1,0 +1,39 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+!IF 0
+
+
+Module Name:
+    sources.
+
+Abstract:
+    This file specifies the target component being built and the list of
+    sources files needed to build that component.  Also specifies optional
+    compiler switches and libraries that are unique for the component being
+    built.
+
+!ENDIF
+
+
+TARGETNAME=pl050_lib
+TARGETTYPE=LIBRARY
+
+SOURCES= \
+    kbdmouse.cpp    \
+    ps2port.cpp    \
+    ps2mouse.cpp    \
+    ps2keybd.cpp
+
+
+#xref VIGUID {49b19966-12f1-4e18-be9a-f765176375e9}
+#xref VSGUID {a18b0cdf-a02f-42e9-9e32-c13daa59b434}

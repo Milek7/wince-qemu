@@ -1,0 +1,107 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this sample source code is subject to the terms of the Microsoft
+; license agreement under which you licensed this sample source code. If
+; you did not accept the terms of the license agreement, you are not
+; authorized to use this sample source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the LICENSE.RTF on your install media or the root of your tools installation.
+; THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+
+; The MODULES section describes which executable modules are
+; included in the image and which memory regions they are loaded in.
+; The memory regions are described in config.bib.
+
+MODULES
+
+; The following are examples of drivers that you might find in a typical
+; platform.bib file.  There are two types of conditional statements that
+; determine whether the given module will be included by the build system.
+;
+; The CESYSGEN statements condition platform.bib based upon whether
+; the operating system component named in the conditional (such as
+; CE_MODULES_GIISR) is available in the current operating system
+; configuration - i.e. what has been selected in the catalog.  Correct
+; use of these conditionals ensures that the BSP will be buildable
+; regardless of which operating system components are selected.
+;
+; The CESYSGEN statements are filtered before the BSP builds by the
+; cefilter program which interprets them based upon the ceconfig.h
+; file generated to the $(SG_OUTPUT_ROOT) directory by the operating
+; system when components are selected and built.  These statements
+; are always commented out with ; and follow the format shown below.
+;
+; The second type of statements are IF statements that are interpreted
+; by the makeimg process, which is the last process the build system
+; executes.  These statements are used for customizing the BSP
+; dynamically.  Using this logic, it is possible to include
+; or exclude components by changing environment variables and
+; re-running makeimg.  Defaults for these environment variables
+; are set in the BSPTemplate.bat file.
+;
+; By contrast, the CESYSGEN statements are already set by the time
+; makeimg runs.
+;
+; The format for including a module in the image is as follows:
+; Name: the destination name the module will have on the device
+; Path: the source path to the module
+; Memory: the memory region (see config.bib) the module will be placed in
+; Type: flags for the module - see MSDN for a detailed description
+;
+; Platform.bib generally includes drivers for the platform.  Of particular
+; note, it decides whether the driver will be loaded in kernel or user
+; mode based on the presence of the "K" flag in the Type field.  Most
+; drivers will also need platform.reg entries describing their properties.
+;
+; Note the following drivers are samples from the operating system.
+; Most platforms use platform-specific drivers in addition to
+; drivers from the operating system.  The operating system uses its
+; own .bib files to include operating system modules, but platform.bib
+; is typically responsible for including all drivers (including
+; operating system samples).
+
+; Name             Path                                            Memory Type
+; --------------   ---------------------------------------------   ------ ----
+; @CESYSGEN IF CE_MODULES_DEVICE
+; @CESYSGEN IF CE_MODULES_GIISR
+giisr.dll          $(_FLATRELEASEDIR)\GIISR.dll                    NK     SHK
+; @CESYSGEN ENDIF CE_MODULES_GIISR
+
+; @CESYSGEN IF CE_MODULES_DISPLAY
+IF BSP_DISPLAY_HFLAT
+ddi_hflat.dll          $(_FLATRELEASEDIR)\ddi_hflat.dll            NK     SHK
+ENDIF BSP_DISPLAY_HFLAT
+; @CESYSGEN ENDIF CE_MODULES_DISPLAY
+
+; @CESYSGEN IF CE_MODULES_KEYBD
+pl050.dll              $(_FLATRELEASEDIR)\pl050.dll                NK     SHK
+; @CESYSGEN ENDIF CE_MODULES_KEYBD
+
+virtio_blk.dll         $(_FLATRELEASEDIR)\virtio_blk.dll           NK     SHK
+
+; @CESYSGEN IF CE_MODULES_USBD
+IF BSP_NOUSB !
+IF BSP_USB_UHCI
+uhci.dll           $(_FLATRELEASEDIR)\uhci.dll                     NK     SHK
+ENDIF BSP_USB_UHCI
+IF BSP_USB_EHCI
+ehci.dll           $(_FLATRELEASEDIR)\ehci.dll                     NK     SHK
+ENDIF BSP_USB_EHCI
+ENDIF BSP_NOUSB !
+; @CESYSGEN ENDIF CE_MODULES_USBD
+; @CESYSGEN ENDIF CE_MODULES_DEVICE
+
+; The FILES section describes any files that stored in the image but not
+; fixed-up for execution by romimage.exe.  Applications in the FILES section
+; will be fixed-up at run-time.
+;
+; The format is the same as the MODULES section.
+FILES
+; Name            Path                                           Memory Type
+; --------------  ---------------------------------------------  ------ ----
+
+; example.txt     $(_FLATRELEASEDIR)\examplefile.txt             NK     SH
+; application.exe $(_FLATRELEASEDIR)\exampleapplication.exe      NK     SH

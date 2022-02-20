@@ -1,0 +1,81 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this sample source code is subject to the terms of the Microsoft
+; license agreement under which you licensed this sample source code. If
+; you did not accept the terms of the license agreement, you are not
+; authorized to use this sample source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the LICENSE.RTF on your install media or the root of your tools installation.
+; THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+; The MEMORY section defines the physical memory available on
+; the device and describes how that memory can be used.
+MEMORY
+;kernel.dll:initialKernelLogZones 00000000 0xFFFFFFFF FIXUPVAR ;extra spam
+; The table below defines how the operating system, including
+; BSP, drivers, and all other non-bootloader components,
+; will be laid out in memory by romimage.exe.  The RAMIMAGE
+; portion is the area available for the operating system code
+; and data.  The RAM potion is the area available for
+; allocations (stack or heap).  The ARGS region is
+; typically shared with the bootloader.  It is physical memory
+; reserved in a known location so the bootloader can pass
+; custom arguments to the operating system.
+;
+; The format of the table is:
+; <region name> <starting hex memory adress> <size in hex> <region type>
+;
+
+;   Name      Start     Size      Type
+;   -------   --------  --------  ----
+; We reserve 4KB of space for bootloader arguments starting 
+; at physical address 0x00200000.  The bootloader's .bib file
+; should also reserve this memory.
+    ;ARGS      00200000  00001000  RESERVED
+
+; Here we are partitioning ~127MB of space for operating
+; system code starting at physical address 0x00201000.
+; We're starting at this address because we're assuming
+; the bootloader and bootloader arguments occupy the
+; the first ~2MB of memory.
+;
+; We could overwrite the bootloader in RAM if we chose to,
+; but we definitely want to preserve the arguments.  
+    ;NK        02010000  07EFF000  RAMIMAGE
+
+; We partition another 127MB of space for RAM available for
+; allocations starting at physical address 0x08100000,
+; which is where the code portion ends.
+    ;RAM       08100000  07F00000  RAM
+
+    NK        80000000  08000000  RAMIMAGE ; 128MB
+    RAM       88000000  08000000  RAM      ; 128MB
+
+; The CONFIG section defines configuration options.  These are
+; options that are passed to romimage.exe.
+CONFIG
+
+; The specifies that writeable sequences in the MODULES section
+; will not be compressed.
+COMPRESSION=OFF
+
+; This setting determines whether profiler structure and symbols
+; are included by the kernel.
+PROFILE=OFF
+
+; This specifies that the writable sections of the kernel
+; are relocated to the start of RAM.  This needs to be on
+; since the kernel begins executing with the MMU off.
+KERNELFIXUPS=ON
+
+; This specifies that the RAM and RAMIMAGE memory sections
+; may have their boundary adjusted dynamically by romimage.exe
+; so that the RAMIMAGE section is just big enough to fit
+; the code and data, and the rest of the physical RAM is
+; available to the kernel as RAM for allocations.
+AUTOSIZE=ON
+
+; The MODULES section for the operating system is typically
+; handled in the platform.bib file.

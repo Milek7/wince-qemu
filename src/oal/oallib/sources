@@ -1,0 +1,39 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# These indicate we're building oal.lib
+TARGETNAME=oal
+TARGETTYPE=LIBRARY
+
+# Add public include paths
+INCLUDES=$(_WINCEROOT)\public\common\oak\inc;$(_WINCEROOT)\public\common\sdk\inc
+
+# The list of source files we're going to compile
+SOURCES= \
+    cache.c flush.s \
+    coproc.c \
+    cpuspec.c \
+    debug.c \
+    init.c \
+    intr.c \
+    ioctl.c \
+    memory.c \
+    multiproc.c \
+    power.c \
+    wfi.s \
+    startup.s \
+    timer.c \
+    vector.c \
+
+FILE_VIEW_ROOT_FOLDER= \
+    readme.html \
+

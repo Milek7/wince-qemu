@@ -1,0 +1,27 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+Welcome to the bootloader template.
+
+The bootloader template is different from the OAL and KITL templates.  The OAL and KITL have a defined interface with the CE kernel.  The bootloader does not have a strictly defined interface.  It is ultimately responsible for loading the operating system image onto the device and jumping to its entry point.  This means the requirements for the bootloader are very minimal.
+
+So, how are we going to get the OS image onto the device?  Typically some kind of I/O is required, which we'll have to implement in our bootloader.  How are we going to initialize the hardware and CPU so that it can handle I/O?  How are we going to validate the OS image before we begin executing it?  The answers to these and other questions define our bootloader functionality.
+
+The bootloader really has one requirement (load and execute the OS) but the implementation of that requirement defines the code flow and entry points.
+
+To ease our implementation of the bootloader, we will take advantage of the CE Boot Framework available in platform\common\src\common\bldr.  This will take care of the some of the basics for us and provide a skeleton with which we can implement our bootloader.  This is just one possible implementation.  In reality, there is no strict bootloader template because the interface between the bootloader and the OS is so minimal.
+
+The CE Boot Framework will do most of the work for us - we'll implement the functions necessary to support it.  Start by looking at bldr.c.  Code comments will denote whether each function is required by the framework or optional.
+
+One important thing to note is that the bootloader may not be the first code that executes on the device.  The bootloader assumes that it is in RAM when it begins running.  So some device-specific code needs to initialize SDRAM, initialize any storage block necessary to load the bootloader into RAM, then actually load the bootloader into RAM and jump to the entry point.  This code is so device-specific that the template will not consider it.
+
+The bootloader has some special build considerations.  Unlike other BSP components, the bootloader needs to be built into an image that can be placed in memory on the device.  Yet it is built using the same system as the rest of our BSP.  We will need special build files to instruct the build system to create an image that can be placed in memory.  The special files we will add are bldr.bib and makefile.inc.  Take a look at the sources file in this directory and then at the bldr.bib and makefile.inc files to see how this is done.

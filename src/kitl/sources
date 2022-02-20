@@ -1,0 +1,48 @@
+!if 0
+Copyright (c) Microsoft Corporation.  All rights reserved.
+!endif
+!if 0
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+!endif
+# These indicate we're building kitl.dll
+TARGETNAME=kitl
+TARGETTYPE=DYNLINK
+
+# Finish all previous directories before building this one
+SYNCHRONIZE_DRAIN=1
+
+# Our entry point is the KitlDllMain function
+DLLENTRY=KitlDllMain
+
+# We don't have any special function exports
+DEFFILE=
+
+# Source files we're going to compile
+SOURCES=\
+    init.c \
+    ioctl.c \
+
+# Libraries we're going to link to form the .exe
+# These include:
+# kitlcore: implements the KitlDllMain function which
+#           retrieves global function pointers between the
+#           OAL and kernel
+#
+# nkstub  : translation library for kernel functions so their
+#           legacy names can be used
+#
+# oemstub : translation library for OAL functions so their
+#           legacy names can be used
+TARGETLIBS =    \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\kitlcore.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\nkstub.lib \
+    $(_COMMONOAKROOT)\lib\$(_CPUDEPPATH)\oemstub.lib \
+
+FILE_VIEW_ROOT_FOLDER= \
+    readme.html \

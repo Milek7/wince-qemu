@@ -1,0 +1,29 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+Welcome to the OAL Template
+
+OAL stands for OEM Adaptation Layer (OAL).  The OAL is the layer of hardware-specific code that allows the Windows CE kernel to interact with the hardware.  It handles timers, interrupts, and many other hardware functions.  Writing the OAL correctly is critical to a functional CE operating system.
+
+This template will describe the minimal functionality necessary to implement a working OAL.  It will also describe optional functionality necessary to implement specific OAL features.
+
+Before we begin looking at source code, it is useful to understand the basics of the Windows CE startup process and how the OAL interacts with the kernel.  The OAL and kernel will be combined with all of the other CE modules into a binary image that can be written to the device.  The bootloader (see the bootloader template for more information) will load this image into RAM and jump to the starting address.  The starting address is the entry point for oal.exe, the function named Startup.  It is the first code in the OAL that executes.  See the comments in startup.c for details on this function.
+
+The Startup function will run and jump to KernelStart function and the kernel will take over execution.  One of the first things it will do is call the OEMInitGlobals function in oal.exe.  This function (provided for us by oemmain.lib) will exchange pointers to two global function pointer tables: NKGlobal and OEMGlobal.
+
+These function pointer tables are the interface between the kernel and the OAL.  The NKGlobal table is the list of kernel functions that the OAL can call.  The OEMGlobal table is the list of OAL functions that the kernel can call.
+
+The OEMGlobal functions are the ones that we need to implement.  Some are required and some are optional.  The source code files in the oallib directory describe the functions and delineate whether they are required or optional.  Once we've implemeted all of the required OEMGlobal functions (as well as the Startup function), we have a working OAL!
+
+To start implementing the OEMGlobal functions, first look at the oallib\init.c file.  Then examine the other files in the oallib directory to get a sense of what functions are required to be implemented.
+
+Once you've implemented all of the required functions in the oallib directory, you can build a working OAL.  When we build the oallib directory, we compile these source files into a library (see the oallib\sources file for details).  When we build the oalexe directory, we link that library along with some operating-system-provided libraries to form oal.exe.  Oal.exe is also renamed to nk.exe later in the build process.

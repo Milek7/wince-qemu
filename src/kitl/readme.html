@@ -1,0 +1,25 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+Welcome to the KITL template.
+
+KITL stands for Kernel Independent Transport Layer.  It is the software debugging transport which enables Windows CE Platform Builder to provide debugging information and services for the device, such as a basic command shell, debug messages, breakpoints, callstacks, and much more.  A working KITL component is extremely valuable for debugging drivers as well as some parts of the OAL.  It is highly recommended that KITL be implemented as early as possible during BSP development.  However, KITL is an optional component and not necessary for normal Windows CE operation.
+
+This template demonstrates the minimal set of functionality that kitl.dll must provide to the kernel for the KITL component to be supported.  The required interface as actually quite small, only three functions and one global variable.
+
+However, for a working KITL implementation, the PKITLTRANSPORT structure provided by the kernel must also be initialized during OEMKitlInit.  Filling this structure exposes several interfaces from the KITL driver to the kernel.
+
+Typically, a separate library is built to support the functions in the PKITLTRANSPORT structure, and then this library is linked with the functions in this template to form kitl.dll.  See the "Implementing Ethernet KITL" tutorial for examples of both the separate library and PKITLTRANSPORT functions.
+
+Relevant tutorials:
+Implementing KITL Ethernet
+Implementing KITL Ethernet using platform\common

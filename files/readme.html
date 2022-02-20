@@ -1,0 +1,99 @@
+<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+<!--
+Use of this sample source code is subject to the terms of the Microsoft
+license agreement under which you licensed this sample source code. If
+you did not accept the terms of the license agreement, you are not
+authorized to use this sample source code. For the terms of the license,
+please see the license agreement between you and Microsoft or, if applicable,
+see the LICENSE.RTF on your install media or the root of your tools installation.
+THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+-->
+Welcome to the BSP Config Files Template.
+
+This template describes the configuration files necessary for a functional BSP.
+It will explain the purpose of the BSP configuration files as well as the
+general function of each BSP configuration file.
+
+At a high level, the goal of the BSP configuration files are to provide
+the build system with the information necessary to run the Windows CE
+operating system on the target device. To do this, the build system needs
+to lay out the operating system such that it can be placed in the device
+memory and the device can begin executing it.
+
+To do this a few different pieces of information are necessary:
+1. Information about the device's memory
+2. Information about what operating system modules and applications
+   should be placed in the device's memory.
+3. Information to initialize the device's registry
+
+Using this information, the build system will create a binary image of
+the operating system that can be placed in device memory and executed.
+
+The build system also needs a few configuration files to assist it
+with building the BSP source code.
+
+Types of Configuration Files
+Binary Image Builder (.bib) files
+These files define the modules that will be included in the operating
+system as well as the memory layout of the image.  The BSP files are
+combined with .bib files for the operating system code to form a master
+list of what modules are included in the image.
+
+Registry (.reg) files
+These files define the initial registry of the image.  Many drivers
+rely on registry entries during initialization.  The BSP files are
+combined with .reg files for the operating system code to form a master
+registry for the image.  Registry entries in the BSP configuration files
+supercede the operating system registry.
+
+File System (.dat) files
+These files define the initial file system directories, files,
+and links for the default RAM-based filesystem (as known as the object
+store).  The BSP files are combined with .dat files from the operating
+system code to form the master list for RAM file system initialization.
+
+List of BSP Configuration Files
+The BSP Configuration files are located in a few different places, so their
+locations will be listed with their description and whether they are required
+or optional for a functional BSP.  See each file for more detailed
+descriptions.
+
+REQUIRED
+\files\config.bib
+This file defines the memory layout of the device so that the tools know
+where to place modules in the image.
+
+REQUIRED
+\files\platform.bib
+REQUIRED
+This file defines which files and applications are included in the image.
+
+REQUIRED
+\files\platform.reg
+This file defines the initial registry of the image.
+
+REQUIRED
+\files\platform.db
+This file defines any platform-specific databases to be included in the
+RAM-based database in the image.
+
+REQUIRED
+\files\platform.dat
+This file defines custom values for the RAM-based filesystem.
+
+REQUIRED
+\sources.cmn
+This file defines common rules inherited by all SOURCES files in the BSP.
+
+REQUIRED
+\cesysgen\makefile
+This file runs custom build actions before and after the BSP compiles.
+It is used to filter the platform.bib and platform.reg files
+according to which operating system components have been included.
+
+OPTIONAL
+\BSPTemplate.bat
+This file sets initial build environment settings used whenever the BSP
+is built.  Its name must match the directory name of the BSP.

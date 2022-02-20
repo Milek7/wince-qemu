@@ -1,0 +1,46 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this sample source code is subject to the terms of the Microsoft
+; license agreement under which you licensed this sample source code. If
+; you did not accept the terms of the license agreement, you are not
+; authorized to use this sample source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the LICENSE.RTF on your install media or the root of your tools installation.
+; THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+
+; This file contains all platform-specific registry entries for the
+; BSP.  An example registry key is listed below.  The CESYSGEN and IF
+; conditional statements operate in an identical fashion to platform.bib.
+; Descriptions of these conditional mechanisms can be found in platform.bib.
+
+; @CESYSGEN IF CE_MODULES_DEVICE
+
+[HKEY_LOCAL_MACHINE\System\GDI\Drivers]
+    "Display"="ddi_hflat.dll"
+
+[HKEY_LOCAL_MACHINE\Drivers\BuiltIn\pl050]
+    "Dll"="pl050.dll"
+    "IClass"="{CBE6DDF2-F5D4-4e16-9F61-4CCC0B6695F3}"
+    "IoBase"=dword:91060000
+    "Prefix"="KBD"
+
+[HKEY_LOCAL_MACHINE\Drivers\BuiltIn\pl050\Keybd]
+    "SysIntr"=dword:10
+    "Priority256"=dword:91
+    "Timeout"=dword:1c2
+
+[HKEY_LOCAL_MACHINE\Drivers\BuiltIn\pl050\Mouse]
+    "SysIntr"=dword:11
+    "Priority256"=dword:f0
+
+[HKEY_LOCAL_MACHINE\Drivers\BuiltIn\virtio_blk]
+    "Dll"="virtio_blk.dll"
+    "IClass"="{A4E7EDDA-E575-4252-9D6B-4195D48BB865}"
+    "IoBase"=dword:91130600
+    "Prefix"="DSK"
+    "SysIntr"=dword:15
+
+; @CESYSGEN ENDIF CE_MODULES_DEVICE
