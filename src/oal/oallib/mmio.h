@@ -11,6 +11,7 @@ enum
 	GICD_ICENABLER0 = 0x1180,
 	GICD_ITARGETSR0 = 0x1800,
 	GICD_ICFGR0 = 0x1C00,
+	GICD_SGIR   = 0x1F00,
 
 	GICC_CTLR = 0x2000,
 	GICC_PMR = 0x2004,
@@ -61,6 +62,7 @@ enum
 };
 
 #define RTC_IRQ 36
+#define IPI_IRQ 1
 
 enum
 {

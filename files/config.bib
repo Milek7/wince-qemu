@@ -53,6 +53,10 @@ MEMORY
     NK        80000000  08000000  RAMIMAGE ; 128MB
     RAM       88000000  08000000  RAM      ; 128MB
 
+IF IMGMPENABLE
+    nk.exe:fOalMpEnable        00000000          1       FIXUPVAR
+ENDIF
+
 ; The CONFIG section defines configuration options.  These are
 ; options that are passed to romimage.exe.
 CONFIG

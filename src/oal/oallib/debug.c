@@ -37,19 +37,8 @@
 void OEMWriteDebugByte(BYTE bChar);
 void OEMInitDebugSerial(void)
 {
-	mmio_write(UART0_ICR, 0x7FF);
- 
-	// Divider = 3000000 / (16 * 115200) = 1.627 = ~1.
-	mmio_write(UART0_IBRD, 1);
-	// Fractional part register = (.627 * 64) + 0.5 = 40.6 = ~40.
-	mmio_write(UART0_FBRD, 40);
- 
-	// Enable FIFO & 8 bit data transmission (1 stop bit, no parity).
-	mmio_write(UART0_LCRH, (1 << 4) | (1 << 5) | (1 << 6));
- 
-	// Mask all interrupts.
-	mmio_write(UART0_IMSC, (1 << 1) | (1 << 4) | (1 << 5) | (1 << 6) |
-	                       (1 << 7) | (1 << 8) | (1 << 9) | (1 << 10));
+	// 8 bit data transmission (1 stop bit, no parity).
+	mmio_write(UART0_LCRH, (1 << 5) | (1 << 6));
  
 	// Enable UART0, receive & transfer part of UART.
 	mmio_write(UART0_CR, (1 << 0) | (1 << 8) | (1 << 9));
@@ -69,8 +58,6 @@ void OEMInitDebugSerial(void)
 //
 void OEMWriteDebugByte(BYTE bChar)
 {
-	// Wait for UART to become ready to transmit.
-	while (mmio_read(UART0_FR) & (1 << 5));
 	mmio_write(UART0_DR, bChar);
 }
 

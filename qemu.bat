@@ -21,4 +21,3 @@
 @REM being included in the initial device registry.
 
 set BSP_DISPLAY_HFLAT=1
-set BSP_NOTOUCH=1

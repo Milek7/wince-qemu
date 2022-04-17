@@ -23,9 +23,14 @@ unsigned int irq_mapping[] = {
 	73, // SYSINTR_FIRMWARE + 3, virtio1
 	74, // SYSINTR_FIRMWARE + 4, virtio2
 	75, // SYSINTR_FIRMWARE + 5, virtio3
+	37, // SYSINTR_FIRMWARE + 6, uart0
+	38, // SYSINTR_FIRMWARE + 7, uart1
+	39, // SYSINTR_FIRMWARE + 8, uart2
+	40, // SYSINTR_FIRMWARE + 9, uart3
+	43, // SYSINTR_FIRMWARE + 10, audio
 };
 
-#define SYS_IRQS 6
+#define SYS_IRQS 11
 
 unsigned int irq_iar[SYS_IRQS];
 unsigned int irq_armed[SYS_IRQS];
@@ -38,7 +43,7 @@ unsigned int irq_armed[SYS_IRQS];
 //
 BOOL OEMInterruptEnable(DWORD dwSysIntr, LPVOID pvData, DWORD cbData)
 {
-	DEBUGMSG(1, (TEXT("OemInterruptEnable %u\r\n"), dwSysIntr));
+	DEBUGMSG(1, (TEXT("OEMInterruptEnable %u\r\n"), dwSysIntr));
 
 	if (dwSysIntr >= SYSINTR_FIRMWARE && dwSysIntr < SYSINTR_FIRMWARE + SYS_IRQS) {
 		int i = dwSysIntr - SYSINTR_FIRMWARE;
@@ -58,7 +63,7 @@ BOOL OEMInterruptEnable(DWORD dwSysIntr, LPVOID pvData, DWORD cbData)
 //
 void OEMInterruptDisable(DWORD dwSysIntr)
 {
-	DEBUGMSG(1, (TEXT("OemInterruptDisable %u\r\n"), dwSysIntr));
+	DEBUGMSG(1, (TEXT("OEMInterruptDisable %u\r\n"), dwSysIntr));
 
 	if (dwSysIntr >= SYSINTR_FIRMWARE && dwSysIntr < SYSINTR_FIRMWARE + SYS_IRQS) {
 		int i = dwSysIntr - SYSINTR_FIRMWARE;
@@ -77,10 +82,12 @@ void OEMInterruptDone(DWORD dwSysIntr)
 {
 	if (dwSysIntr >= SYSINTR_FIRMWARE && dwSysIntr < SYSINTR_FIRMWARE + SYS_IRQS) {
 		int i = dwSysIntr - SYSINTR_FIRMWARE;
-		if (irq_armed[i])
+		if (irq_armed[i]) {
 			DEBUGMSG(1, (TEXT("unexpected IRQ arming %u\r\n"), irq_mapping[i]));
-		irq_armed[i] = 1;
-		mmio_write(GIC_BASE + GICC_DIR, irq_iar[i]);
+		} else {
+			irq_armed[i] = 1;
+			mmio_write(GIC_BASE + GICC_DIR, irq_iar[i]);
+		}
 	}
 }
 
@@ -123,6 +130,8 @@ uint32_t update_timer(void)
 	return timeUS;
 }
 
+DWORD Read_MPIDR(void);
+
 // ---------------------------------------------------------------------------
 // OEMInterruptHandler: REQUIRED for ARM, UNUSED for other cpus
 //
@@ -141,8 +150,6 @@ DWORD OEMInterruptHandler(DWORD dwEPC)
 	if (irq == 1023) // spurious
 		return ret;
 
-	//DEBUGMSG(1, (TEXT("IRQ %u\r\n"), irq));
-
 	if (irq == TIMER_IRQ) {
 		known = 1;
 		update_timer();
@@ -160,7 +167,12 @@ DWORD OEMInterruptHandler(DWORD dwEPC)
 		mmio_write(RTC_BASE + RTCICR, 1);
 		ret = SYSINTR_RTC_ALARM;
 	}
-	
+
+	if (irq == IPI_IRQ) {
+		known = 1;
+		ret = SYSINTR_IPI;
+	}
+
 	if (!known)
 	{
 		for (i = 0; i < SYS_IRQS; i++) {
@@ -181,6 +193,9 @@ DWORD OEMInterruptHandler(DWORD dwEPC)
 	if (!known)
 		DEBUGMSG(1, (TEXT("unexpected IRQ %u\r\n"), irq));
 
+	if (known && ret != SYSINTR_IPI && Read_MPIDR() != 0)
+		DEBUGMSG(1, (TEXT("IRQ on other CPU: %u\r\n"), irq));
+
 	mmio_write(GIC_BASE + GICC_EOIR, iar);
 
 	if (ret < SYSINTR_FIRMWARE)
@@ -197,10 +212,5 @@ DWORD OEMInterruptHandler(DWORD dwEPC)
 //
 void OEMInterruptHandlerFIQ(void)
 {
-  // Fill in interrupt code here.
-	DEBUGMSG(1, (TEXT("FIQ\r\n")));
-
-  return;
+	DEBUGMSG(1, (TEXT("unexpected FIQ\r\n")));
 }
-
-

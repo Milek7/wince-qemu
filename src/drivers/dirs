@@ -25,7 +25,11 @@ THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
 #
 DIRS= \
 # @CESYSGEN IF CE_MODULES_DEVICE
+    streamdriver \
     pl050 \
     virtio_blk \
+    pl041 \
+    pl011 \
+    virtio_tablet
 # @CESYSGEN ENDIF CE_MODULES_DEVICE
 

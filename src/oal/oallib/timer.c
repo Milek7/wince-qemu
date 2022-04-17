@@ -169,8 +169,12 @@ uint32_t update_timer(void);
 VOID OEMUpdateReschedTime(DWORD dwTick)
 {
 	DWORD interval = 1;
+	DWORD i, z, us;
 
-	uint32_t us = update_timer();
+	//for (i = 0; i < 50000; i++)
+	//	z = mmio_read(SP804_BASE + TimerValue);
+
+	us = update_timer();
 	//DEBUGMSG(1, (TEXT("OEMUpdateReschedTime %u, %u\r\n"), CurMSec, dwTick));
 
 	if (dwTick > CurMSec)

@@ -36,8 +36,6 @@
 g_oalAddressTable
 	DCD     CE_NEW_MAPPING_TABLE, g_oalDeviceTable, 0
     DCD     0x80000000, 0x80000000, 256     ; main RAM
-    ;DCD     0x90000000, 0x14000000, 32      ; 32MB SRAM
-    ;DCD     x, 0x2E000000, 1               ; 64KB SRAM
     DCD     0, 0, 0 ; end of table
  
 g_oalDeviceTable

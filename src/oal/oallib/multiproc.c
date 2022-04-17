@@ -12,6 +12,15 @@
 //
 #include <windows.h>
 #include <oemglobal.h>
+#include "mmio.h"
+
+volatile int g_numExtraCPUs;
+volatile void* g_pfnNkContinue;
+volatile DWORD g_controlRegs[4];
+
+void Read_ControlRegs(DWORD*);
+DWORD Read_MPIDR(void);
+void Do_DSB(void);
 
 // ---------------------------------------------------------------------------
 // OEMMpStartAllCPUs: OPTIONAL
@@ -22,54 +31,21 @@
 //
 BOOL OEMMpStartAllCPUs(PLONG pnCpus, FARPROC pfnContinue)
 {
-  // fill in processor init code here
 	DEBUGMSG(1, (TEXT("OEMMpStartAllCPUs\r\n")));
 
-  return TRUE;
-}
+	g_numExtraCPUs = 0;
+	g_pfnNkContinue = pfnContinue;
+	Read_ControlRegs(g_controlRegs);
+	Do_DSB();
 
-// ---------------------------------------------------------------------------
-// OEMMpPerCPUInit: OPTIONAL
-//
-// This function is called by the kernel on each slave CPU.  It is the first
-// function the kernel calls on the slave CPU and it returns the hardware
-// CPUID.  This function is required for multiprocessor support.
-//
-DWORD OEMMpPerCPUInit(void)
-{
-  // fill in processor init code here
-	DEBUGMSG(1, (TEXT("OEMMpPerCPUInit\r\n")));
+	mmio_write(GIC_BASE + GICD_SGIR, (1 << 24));
 
-  return 0;
-}
+	while (mmio_read(SP804_BASE + TimerValue) > 500000);
+	Do_DSB();
 
-// ---------------------------------------------------------------------------
-// OEMMpCpuPowerFunc: OPTIONAL
-//
-// This function is called by the kernel to power on/off a specific CPU for
-// power saving purposes, or do a partial power down/up according to the hint
-// value provided by the kernel.  It is optional for multiprocessor support.  
-//
-BOOL OEMMpCpuPowerFunc(DWORD dwProcessor, BOOL fOnOff, DWORD dwHint)
-{
-  // fill in processor power code here
-	DEBUGMSG(1, (TEXT("OEMMpCpuPowerFunc\r\n")));
+	*pnCpus = g_numExtraCPUs + 1;
 
-  return TRUE;
-}
-
-// ---------------------------------------------------------------------------
-// OEMIpiHandler: OPTIONAL
-//
-// This function handles platform-specific interprocessor interrupts.  It is
-// optional for multiprocessor support.
-//
-void OEMIpiHandler(DWORD dwCommand, DWORD dwData)
-{
-  // fill in interrupt code here
-	DEBUGMSG(1, (TEXT("OEMIpiHandler\r\n")));
-
-  return;
+	return TRUE;
 }
 
 // ---------------------------------------------------------------------------
@@ -80,26 +56,14 @@ void OEMIpiHandler(DWORD dwCommand, DWORD dwData)
 //
 BOOL OEMSendIPI(DWORD dwType, DWORD dwTarget)
 {
-  // fill in interrupt code here
-	DEBUGMSG(1, (TEXT("OEMSendIPI\r\n")));
+	if (dwType == IPI_TYPE_ALL_BUT_SELF) {
+		mmio_write(GIC_BASE + GICD_SGIR, (1 << 24) | 1);
+	} else if (dwType == IPI_TYPE_ALL_INCLUDE_SELF) {
+		mmio_write(GIC_BASE + GICD_SGIR, (1 << 24) | 1);
+		mmio_write(GIC_BASE + GICD_SGIR, (1 << 25) | 1);
+	} else if (dwType == IPI_TYPE_SPECIFIC_CPU) {
+		mmio_write(GIC_BASE + GICD_SGIR, (1 << (16 + dwTarget)) | 1);
+	}
 
-  return TRUE;
+	return TRUE;
 }
-
-// ---------------------------------------------------------------------------
-// OEMInitInterlockedFunctions: OPTIONAL
-//
-// This function initializes the interlocked function table for the OAL.  It
-// is required for multiprocessor support.  However, a default implementation
-// is provided by NKStub for each CPU - only override this function if you
-// need platform-specific interlocked function initialization.
-//
-void OEMInitInterlockedFunctions(void)
-{
-  // fill in function table code here
-	DEBUGMSG(1, (TEXT("OEMInitInterlockedFunctions\r\n")));
-
-  return;
-}
-
-

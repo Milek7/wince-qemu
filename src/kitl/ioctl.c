@@ -11,6 +11,8 @@
 // THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
 //
 #include <windows.h>
+#include <kitl.h>
+#include <nkexport.h>
 
 // Ioctl.c
  
@@ -20,10 +22,9 @@
 //
 // This function handles KITL IOCTL codes.
 //
+
 BOOL OEMKitlIoctl (DWORD code, VOID * pInBuffer, DWORD inSize, VOID * pOutBuffer, DWORD outSize, DWORD * pOutSize)
 {
-  // Fill in IOCTL code here.
-
-  return FALSE;
+	NKSetLastError (ERROR_NOT_SUPPORTED);
+	return FALSE;
 }
-

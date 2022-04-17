@@ -1,0 +1,25 @@
+;
+; Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;
+; Use of this sample source code is subject to the terms of the Microsoft
+; license agreement under which you licensed this sample source code. If
+; you did not accept the terms of the license agreement, you are not
+; authorized to use this sample source code. For the terms of the license,
+; please see the license agreement between you and Microsoft or, if applicable,
+; see the LICENSE.RTF on your install media or the root of your tools installation.
+; THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
+;
+; 
+; The name of the DLL this def file will be used for.
+LIBRARY        pl011
+
+; All functions that the stream driver exports, each containing the driver prefix
+EXPORTS
+    COM_Init
+    COM_Deinit
+    COM_Open
+    COM_Close
+    COM_Read
+    COM_Write
+    COM_IOControl

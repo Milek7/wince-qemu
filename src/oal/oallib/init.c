@@ -13,7 +13,7 @@
 #include <windows.h>
 #include <winnt.h>
 #include <pkfuncs.h>
-#include <oemglobal.h>
+#include <nkexport.h>
 #include "mmio.h"
 
 // Init.c
@@ -41,6 +41,7 @@
 // custom BSP functions
 void RemapOALGlobalFunctions(void);
 void SetOALGlobalVariables(void);
+DWORD Read_MPIDR(void);
 
 // forward declarations of optional OAL functions
 void OEMWriteDebugByte(BYTE bChar);
@@ -57,7 +58,6 @@ void OEMRestoreCoProcRegs(LPBYTE pArea);
 DWORD OEMReadRegistry(DWORD dwFlags, LPBYTE pBuf, DWORD len);
 BOOL OEMWriteRegistry (DWORD dwFlags, LPBYTE pBuf, DWORD len);
 BOOL OEMMpStartAllCPUs(PLONG pnCpus, FARPROC pfnContinue);
-DWORD OEMMpPerCPUInit(void);
 BOOL OEMMpCpuPowerFunc(DWORD dwProcessor, BOOL fOnOff, DWORD dwHint);
 void OEMIpiHandler(DWORD dwCommand, DWORD dwData);
 BOOL OEMSendIPI(DWORD dwType, DWORD dwTarget);
@@ -109,6 +109,8 @@ void setup_timer(void)
 		mmio_write(RTC_BASE + RTCCR, 1);
 	gic_irq_enable(RTC_IRQ);
 
+	mmio_write(GIC_BASE + GICD_ISENABLER0, 3); // enable IPI
+
 	// enable gic distributor
 	mmio_write(GIC_BASE + GICD_CTLR, (1 << 0)); // enable Group0
 
@@ -116,6 +118,8 @@ void setup_timer(void)
 	mmio_write(GIC_BASE + GICC_CTLR, (1 << 9) | (1 << 0)); // EOI mode, enable Group0
 	mmio_write(GIC_BASE + GICC_PMR, 0xF0); // priority
 }
+
+int fOalMpEnable; // This is set by FIXUPVAR in config.bib
 
 // ---------------------------------------------------------------------------
 // OEMInit: REQUIRED
@@ -138,6 +142,8 @@ void OEMInit(void)
 
 	// Optionally initialize OAL variables
 	SetOALGlobalVariables();
+
+	g_pNKGlobal->pfnKITLIoctl(IOCTL_KITL_STARTUP, NULL, 0, NULL, 0, NULL);
 
 	setup_timer();
 }
@@ -167,11 +173,11 @@ void RemapOALGlobalFunctions(void)
   //g_pOemGlobal->pfnRestoreCoProcRegs = OEMRestoreCoProcRegs;
   //g_pOemGlobal->pfnReadRegistry = OEMReadRegistry;
   //g_pOemGlobal->pfnWriteRegistry = OEMWriteRegistry;
-  //g_pOemGlobal->pfnStartAllCpus = OEMMpStartAllCPUs;
-  //g_pOemGlobal->pfnMpPerCPUInit = OEMMpPerCPUInit;
+  g_pOemGlobal->pfnStartAllCpus = OEMMpStartAllCPUs;
+  g_pOemGlobal->pfnMpPerCPUInit = Read_MPIDR;
   //g_pOemGlobal->pfnMpCpuPowerFunc = OEMMpCpuPowerFunc;
   //g_pOemGlobal->pfnIpiHandler = OEMIpiHandler;
-  //g_pOemGlobal->pfnSendIpi = OEMSendIPI;
+  g_pOemGlobal->pfnSendIpi = OEMSendIPI;
   //g_pOemGlobal->pfnIdleEx = OEMIdleEx;
   //g_pOemGlobal->pfnInitInterlockedFunc = OEMInitInterlockedFunctions;
 
@@ -203,6 +209,7 @@ void RemapOALGlobalFunctions(void)
 {
   // Specifies the thread quantum for OS (scheduler period).
   //g_pOemGlobal->dwDefaultThreadQuantum = DEFAULT_THREAD_QUANTUM;
+	g_pOemGlobal->dwDefaultThreadQuantum = 30;
 
   // Specifies the next available address following the first available
   // contiguous block of memory.  The kernel sets this variable before
@@ -267,7 +274,7 @@ void RemapOALGlobalFunctions(void)
   //g_pOemGlobal->cpPageOutHigh = 3 * 1024 * 1024 / VM_PAGE_SIZE;
 
   // Specifies whether multiprocessor support is enabled
-  //g_pOemGlobal->fMPEnable = FALSE;
+  g_pOemGlobal->fMPEnable = fOalMpEnable;
 
 #ifdef DEBUG
   // A reference to the OAL's debug zone settings DBGPARAM structure

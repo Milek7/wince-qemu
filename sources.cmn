@@ -17,6 +17,8 @@ THE SAMPLE SOURCE CODE IS PROVIDED "AS IS", WITH NO WARRANTIES OR INDEMNITIES.
 # Indicate to the build system we are compiling the BSP
 RELEASETYPE=PLATFORM
 
+WINCEOEM=1
+
 # Set up some paths used by other macros in the build system
 _COMMONPUBROOT=$(SG_OUTPUT_ROOT)
 __PROJROOT=$(_PROJECTROOT)

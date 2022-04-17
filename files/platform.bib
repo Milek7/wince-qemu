@@ -66,9 +66,6 @@ MODULES
 ; Name             Path                                            Memory Type
 ; --------------   ---------------------------------------------   ------ ----
 ; @CESYSGEN IF CE_MODULES_DEVICE
-; @CESYSGEN IF CE_MODULES_GIISR
-giisr.dll          $(_FLATRELEASEDIR)\GIISR.dll                    NK     SHK
-; @CESYSGEN ENDIF CE_MODULES_GIISR
 
 ; @CESYSGEN IF CE_MODULES_DISPLAY
 IF BSP_DISPLAY_HFLAT
@@ -81,18 +78,12 @@ pl050.dll              $(_FLATRELEASEDIR)\pl050.dll                NK     SHK
 ; @CESYSGEN ENDIF CE_MODULES_KEYBD
 
 virtio_blk.dll         $(_FLATRELEASEDIR)\virtio_blk.dll           NK     SHK
+virtio_tablet.dll      $(_FLATRELEASEDIR)\virtio_tablet.dll        NK     SHK
+pl041.dll              $(_FLATRELEASEDIR)\pl041.dll                NK     SHK
+pl011.dll              $(_FLATRELEASEDIR)\pl011.dll                NK     SHK
 
-; @CESYSGEN IF CE_MODULES_USBD
-IF BSP_NOUSB !
-IF BSP_USB_UHCI
-uhci.dll           $(_FLATRELEASEDIR)\uhci.dll                     NK     SHK
-ENDIF BSP_USB_UHCI
-IF BSP_USB_EHCI
-ehci.dll           $(_FLATRELEASEDIR)\ehci.dll                     NK     SHK
-ENDIF BSP_USB_EHCI
-ENDIF BSP_NOUSB !
-; @CESYSGEN ENDIF CE_MODULES_USBD
 ; @CESYSGEN ENDIF CE_MODULES_DEVICE
+
 
 ; The FILES section describes any files that stored in the image but not
 ; fixed-up for execution by romimage.exe.  Applications in the FILES section
